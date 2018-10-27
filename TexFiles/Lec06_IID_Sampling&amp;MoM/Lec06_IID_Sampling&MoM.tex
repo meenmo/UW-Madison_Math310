@@ -1,0 +1,129 @@
+\documentclass[12pt]{article}
+\usepackage{url,amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{array}
+\usepackage{amssymb}
+
+\usepackage{longtable}
+\usepackage{graphicx}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\setlength{\oddsidemargin}{.25in}
+\setlength{\evensidemargin}{.25in}
+\setlength{\textwidth}{6.25in}
+\setlength{\topmargin}{-0.4in}
+\setlength{\textheight}{8.5in}
+
+\newcommand{\heading}[5]{
+   \renewcommand{\thepage}{#1-\arabic{page}}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{
+    \hbox to 5.78in { {\bf Math/Stat 310: Intro to Mathematical Statistics}
+         \hfill #2 }
+       \vspace{4mm}
+       \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+       \vspace{2mm}
+       \hbox to 5.78in { {\it #3 \hfill #4} }
+      }
+   }
+   \end{center}
+%   \vspace*{4mm}
+}
+
+\newcommand{\handout}[3]{\heading{#1}{#2}{Instructor:
+Hyunseung Kang}{Scribe: Meenmo Kang}{Lectures #1: #3}}
+
+\setlength{\parindent}{0in}
+\setlength{\parskip}{0.1in}
+
+\newcommand{\Var}{{\rm Var}}
+\newcommand{\E}{{\rm E}}
+\newcommand{\Cov}{{\rm Cov}}
+\newcommand{\Corr}{{\rm Corr}}
+\newcommand{\pdf}{{\rm pdf}}
+\newcommand{\mgf}{{\rm MGF}}
+\newcommand{\proof}{{\bf Proof. }} %% To begin a proof write \proof
+\newcommand{\qed}{\mbox{}\hspace*{\fill}\nolinebreak\mbox{$\rule{0.6em}{0.6em}$}} %%to end your proof write $\qed$.
+\newcommand{\ma}{{\mathcal A}}
+\newcommand{\mf}{{\mathcal F}}
+\newcommand{\hs}{\heartsuit}
+\newcommand{\cs}{\clubsuit}
+\newcommand{\noi}{\noindent}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+
+\bibliographystyle{plain}
+
+\begin{document}
+\handout{6}{February 14, 2018}{I.I.D Sampling Method and Method of Moments}
+
+\begin{section}{I.I.D. Sampling}
+In previous lectures, we discussed SRS sampling were we sampled n individuals from a population of N people at random. In this lecture, we discuss another form of sampling, known as i.i.d. sampling where n individuals are sampled from a population in independent and identically distributed fashion from some population density. 
+
+\section{IID Sampling vs SRS Sampling}
+When estimating parameter(s), there are differences between SRS and $i.i.d.$ since characteristics of their properties vary. The most distinguishable thing is their variables. In the case of SRS, we do not make any assumption on individual $\xi_i$ because it can be either sampled or not sampled. Meanwhile, parameter $X_i$ of $i.i.d.$ represents the actual value of measurement. Therefore, different methods should be approached by different sampling. \\ 
+
+
+\begin{longtable}{p{2.7cm}p{5.4cm}p{5.4cm}}
+\caption{Example of Normal Distribution}\\
+    \hline
+    {\bf } & {\bf SRS} & {\bf I.I.D.} \\ \hline
+
+    \newline \newline \newline  Population   & $(\xi_1, ... , \xi_N)$ \newline No assumption was made on individual $\xi_i$ \newline \newline
+    e.g.)$\xi_i$ is height of a $ith$ person
+      &   $pdf_{\theta}$ that describes population parameter $\theta$ maps \newline 
+    $\theta$(domain) $\rightarrow$ $pdf$(range) \newline \newline e.g.)Population of height is normally distributed with mean $\mu$ and variance $\sigma ^2$  \\
+          \hline
+
+
+    \newline Sample & $(X_1, ... , X_N) $ \newline Each variable is dependent on the other  & \newline $X_i \stackrel{iid}{\sim} pdf_{\theta}$ \\ \hline    
+    \newline Parameters & $\mu = \frac{1}{N} \sum\limits_{l=1}^{N} \xi_i$ \newline $\sigma ^2 = \frac{1}{N} \sum\limits_{l=1}^{N} (\xi_i - \mu)^2$ & $\mu = E[X_i]$ \newline $\sigma ^2 = Var[X_i]$ \\ \hline
+    
+    \newline Example &$\xi_i$: Height of $ith$ person \newline $X_i$: Sampled(1); Otherwise(0) \newline  $X_i$ and $X_j$ are dependent & $X_i$ of $i.i.d.$ is $i$th measurement \newline $X_i$ and $X_j$ are independent \\ \hline
+\end{longtable}
+
+\section{Estimating Parameters from IID Sampling}
+To estimate population parameter(s), we are going to use the method of moments. The major reason why  the method of moments is used for estimation is that, by law of large numbers, as $n \rightarrow \infty$, $\frac{1}{n} \sum\limits_{i=1}^{n} X$ becomes E[X]. Consequently, $\lim_{n \rightarrow \infty} \frac{1}{n} \sum\limits_{i=1}^{n}(X_i^k)$ is a good approximation for $E[X^k]$. So, firstly, we should define the moments of X: $X_1$ to $X_k$ ($\mu_1=E[X^1], ... ,\; \mu_k=E[X^k]$). Then, a mapping between $(\mu_1,\mu_2,...,\mu_k) \rightarrow \theta $ should be found. \\
+
+\textbf{Example: Normal Distribution}\\
+Suppose that we sample the height of \textbf{n} students on the campus again, but the samples are $i.i.d.$ and normally distributed. Namely, $X_1, ..., X_n ~ N(\mu, \sigma^2)$. Since the parameters of normal distribution are $\theta = (\mu, \sigma^2)$, the first and second moments  need to be estimated. \\
+
+$\mu_1 = E[X] = \mu$\\
+$\mu_2 = E[X^2] = \mu^2 + \sigma^2 \Rightarrow \sigma^2 = \mu_2 - \mu_1^2$    $(\because \sigma^2 = E[X^2] - E[x]^2 \Rightarrow E[X^2] = E[X]^2 + \sigma^2)$\\
+
+Therefore, we can deduce that 
+$$\hat{\mu} = \bar{X}$$ 
+$$\hat{\sigma^2} = \frac{1}{n} \sum\limits_{i=1}^{n} X_i^2 - \bar{X}^2 = \frac{1}{n} \sum\limits_{i=1}^{n} (X_i - \bar{X})^2$$ \newline
+
+
+\textbf{Example: Binomial Distribution}\\
+Suppose that we flip a coin infinite number of times to check whether it is fair. When the variable $X$ is the total number of heads, the distribution is expressed as $X \sim Bin(n,p)$. However, unlike normal distribution, there is only one parameter $\hat{p}$ (=$\frac{X}{n}$) for this case. Because only a single parameter exists, only the first moment is needed. In the meantime, since what we are observing is just one thing, the number of heads, we assume that E[X] = $X$ as like Bernoulli distribution.
+$$E[X] = np \Rightarrow p = \frac{E[x]}{n} \Rightarrow \frac{X}{n}$$\\
+
+
+\textbf{Example: Gamma Distribution}\\
+As for normal distribution, there are two different parameters for Gamma distribution $\theta (\alpha,\lambda)$. Hence, the first and second moments are required for this estimation. $\mu_1$ and $\mu_2$ are defined by $\mu_1 = \frac{\alpha}{\lambda}, \quad \mu_2 = \frac{\alpha(\alpha + 1)}{\lambda^2} \quad$ (See Textbook p.157)\\ 
+
+Using one of the properties we proved above, $$\mu_2 = \mu^2 + \sigma^2 = \mu_1^2 + \frac{\mu_1}{\lambda} \Rightarrow \lambda = \frac{\mu_1}{\mu_2-\mu_1^2}$$ 
+$$\alpha = \lambda \mu_1 = \frac{\mu_1^2}{\mu_2-\mu_1^2}$$can be derived. Therefore, estimations for the method of moments are 
+$$\hat{\lambda} = \frac{\bar{X}}{\hat{\sigma^2}} \qquad \hat{\alpha} = \frac{\bar{X}^2}{\hat{\sigma^2}}$$
+
+
+
+
+
+
+
+
+
+\end{section}
+
+\end{document}

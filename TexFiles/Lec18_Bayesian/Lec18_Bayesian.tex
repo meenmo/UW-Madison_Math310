@@ -1,0 +1,154 @@
+\documentclass[12pt]{article}
+\usepackage{url,amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage{amsbsy}
+\usepackage{longtable}
+\usepackage{graphicx}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\setlength{\oddsidemargin}{.25in}
+\setlength{\evensidemargin}{.25in}
+\setlength{\textwidth}{6.25in}
+\setlength{\topmargin}{-0.4in}
+\setlength{\textheight}{8.5in}
+
+\newcommand{\heading}[5]{
+   \renewcommand{\thepage}{#1-\arabic{page}}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{
+    \hbox to 5.78in { {\bf Math/Stat 310: Intro to Mathematical Statistics}
+         \hfill #2 }
+       \vspace{4mm}
+       \hbox to 5.78in { {\Large \hfill #5  \hfill} }
+       \vspace{2mm}
+       \hbox to 5.78in { {\it #3 \hfill #4} }
+      }
+   }
+   \end{center}
+%   \vspace*{4mm}
+}
+
+\newcommand{\handout}[3]{\heading{#1}{#2}{Instructor:
+Hyunseung Kang}{Scribe: Meenmo Kang}{Lecture #1: #3}}
+
+\setlength{\parindent}{0in}
+\setlength{\parskip}{0.1in}
+
+\newcommand{\Var}{{\rm Var}}
+\newcommand{\E}{{\rm E}}
+\newcommand{\Cov}{{\rm Cov}}
+\newcommand{\Corr}{{\rm Corr}}
+\newcommand{\pdf}{{\rm pdf}}
+\newcommand{\mgf}{{\rm MGF}}
+\newcommand{\proof}{{\bf Proof. }} %% To begin a proof write \proof
+\newcommand{\qed}{\mbox{}\hspace*{\fill}\nolinebreak\mbox{$\rule{0.6em}{0.6em}$}} %%to end your proof write $\qed$.
+\newcommand{\ma}{{\mathcal A}}
+\newcommand{\mf}{{\mathcal F}}
+\newcommand{\hs}{\heartsuit}
+\newcommand{\cs}{\clubsuit}
+\newcommand{\noi}{\noindent}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+
+\bibliographystyle{plain}
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+\begin{document}
+\handout{18}{April 18, 2018}{Bayesian Estimation}
+%Set n to the lecture number
+
+\begin{section}{Bayesian Approach to Estimation}
+\begin{itemize}
+	\item We want to learn about $\theta$ from $n$ $iid$ samples $X_1,...,X_n$ from $pdf_\theta$.
+    \item MOM and MLE
+    \item What if we had some prior information about $\theta$?
+    \item Specifically, our prior information coms in the form of a distribution function $\pi(\theta)$.
+    \item Goal: How do we incorporate this prior information about estimator $\theta$?
+\end{itemize}
+
+\subsection{Example} 
+Heights of UW-Madison Students $n$ $iid$ samples from $N(\mu,\sigma^2=3^2)$.
+
+Our goal is to estimate $\mu_1$ the population mean height from both $n$ $iid$ samples and prior information about $\mu$.
+
+Suppose we find one past distribution whose $\mu$ was 72. Then we can assume  
+$N(72,3^2) \Leftrightarrow$ 
+prior distribution based on background information.
+
+\subsection{Bayes Rule}
+$$P(A|B)=\frac{P(B|A)\cdot P(A)}{P(B)}$$
+
+We can use Bayes rule to incorporate information from $n$ $iid$ samples $X_1,...,X_n$ and prior distribution $\pi(\theta)$.
+
+$$P(\theta|X_1,...,X_n) = \frac{P(X_1,...,X_n|\theta)P(\theta)}{P(X_1,...,X_n)} \propto P(X_1,...,X_n)P(\theta)$$
+$$\text{where $P(\theta|X_1,...,X_n)$ is posterior distribution or target},$$
+$$\text{$P(X_1,...,X_n|\theta)$ is Likelihood function}, and$$
+$$\text{$P(\theta)$ is prior distribution}$$
+
+$$P(X_1,...,X_n|\mu)P(\mu) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi(3^2)}}exp \left(-\frac{(X_i-\mu)^2}{2\cdot3^2}\right)\cdot \frac{1}{\sqrt{2\pi(3^2)}}exp\left(-\frac{(\mu-72)^2}{2\cdot3^2}\right)$$
+$$=\left(\frac{1}{\sqrt{2\pi(3^2)}}\right)^{n+1} exp\left(-\frac{1}{2\cdot3^2}\sum_{i=1}^n(X_i-\mu)^2 - \frac{1}{2\cdot3^2}(\mu-72)^2\right)$$
+
+$$=\left(\frac{1}{\sqrt{2\pi(3^2)}}\right)^{n+1} exp\left(-\frac{1}{2\cdot3^2}
+(\sum_{i=1}^n X_i^2 - 2\sum_{i=1}^n \mu X_i +n\mu^2
++(\mu^2 - 2\cdot72\mu+72^2)\right)$$
+$$=\left(\frac{1}{\sqrt{2\pi(3^2)}}\right)^{n+1} exp\left(\frac{-\sum_{x=1}^n X_i^2 -2\mu(\sum_{x=1}^n X_i + 72) - (n+1)\mu^2 -72^2}{2\cdot 3^2}\right)$$
+
+Drop all terms not involving $\mu$
+$$exp\left(\frac{-(n+1)\mu^2+2\mu(\sum X_i + 72)}{2\cdot3^2}\right) = exp\left(-\frac{\mu - 2\mu(\frac{\sum X_i + 72}{n+1})}{\frac{2\cdot3^2}{n+1}}\right)$$
+
+$$=exp\left(-\frac{(\mu - 2\mu(\frac{\sum X_i + 72}{n+1}))^2}{\frac{2\cdot3^2}{n+1}}\right)\cdot exp\left(\frac{\sum X_i + 72}{n+1}\right)^2 / \frac{2\cdot3^2}{n+1}$$
+$$\text{Thus}\; P(\mu|X_1,...,X_n) \propto exp\left (-\frac{(\mu-\frac{\sum_{i=1}^n X_i + 72}{n+1})^2}{\frac{2\cdot 3^2}{n+1}} \right)$$
+$$\Rightarrow P(\mu|X_1,...,X_n) \sim N\left(\frac{\sum_{i=1}^n X_i + 72}{n+1}, \frac{3^2}{n+1}\right)$$
+\newline
+Our Bayesian estimate of $\mu$ is $P(\mu|x_1,...,X_n) \sim N(\frac{n}{n+1} \bar{X} + \frac{72}{n+1}, \frac{3^2}{n+1})$\\
+
+$\Rightarrow \text{Posterior parameters:}\; \mu = \frac{n}{n+1}\bar{X} + \frac{72}{n+1}\qquad \sigma^2 = \frac{3^2}{n+1}$\\ $\Rightarrow \text{MLE:}\; \bar{X}$
+
+\subsection{Von-Mise Type Theorem}
+\begin{itemize}
+	\item As $n \rightarrow \infty$, prior information is typically irrelevant.
+	\item As $n \rightarrow \infty$, posterior mean $\approx$ MLE
+    \item For small n, prior information always dominates in learning about $\theta$
+\end{itemize}
+
+\subsection{A couple points about being Bayesian}
+\begin{itemize}
+	\item We can use distribution hyperparmeter in your prior information. (e.g. 72, $3^2$)
+    \item Bayesian estimation is computationally expensive. 
+    \item This is used a lot in consulting/marketing research.
+\end{itemize}
+
+\subsection{Example}
+$n=3$ $iid$ samples from a distribution $P(X=1) = \theta, P(X=2) = 1 - \theta$\\
+Samples are $X_1=1, X_2=2, X_3=2$\\
+
+Suppose $\theta \sim Unif[0,1]$ is given, but this is non-informative prior information. \\
+
+What is the Bayesian estiomation of $\theta$?\\
+$$P(\theta|X_1,X_2,X_3) \propto P(X_1,X_2,X_3|\theta)P(\theta) = \theta(1-\theta)^2 \cdot \frac{1}{1} = \theta(1-\theta)^2$$
+This is the Beta distribution
+$$P(\theta|X_1,X_2,X-3,) \sim Beta(2,3)$$
+$\Rightarrow$ Posterior Mean: $\frac{\alpha}{\alpha+\beta} = \frac{2}{2+3} = \frac{2}{5}$\\
+$\Rightarrow$ MLE \& MOM : $\frac{1}{3}$\\
+
+
+
+
+\end{section}
+\end{document}
+
+
+
+
